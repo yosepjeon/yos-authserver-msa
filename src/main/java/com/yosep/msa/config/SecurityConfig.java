@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -14,7 +15,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
 import com.yosep.msa.account.YoggaebiUserService;
@@ -22,7 +22,7 @@ import com.yosep.msa.account.YoggaebiUserService;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-	
+
 	@Autowired
 	YoggaebiUserService yoggaebiUserService;
 
@@ -39,6 +39,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		return new RedisTokenStore(redisConnectionFactory);
 	}
 
+//	@Bean
+//	public TokenStore tokenStore() {
+//		return new RedisTokenStore(jedisConnectionFactory());
+//	}
+//
+//	@SuppressWarnings("deprecation")
+//	@Bean
+//	public JedisConnectionFactory jedisConnectionFactory() {
+//		
+//		JedisConnectionFactory factory = new JedisConnectionFactory();
+//		factory.setHostName("localhost");
+//		factory.setPort(6379);
+//		factory.setPassword("");
+//		factory.setDatabase(1);
+//		factory.setUsePool(true);
+//
+//		return factory;
+//	}
+
 	// 다른 인증서버, 리소스서버가 참조할 수 있도록 빈으로 등록 후 이 메소드 사용
 	@Bean
 	@Override
@@ -53,7 +72,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		// TODO Auto-generated method stub
 		auth.userDetailsService(yoggaebiUserService).passwordEncoder(passwordEncoder);
 	}
-	
+
 	// filter를 적용할지 말지를 정의하는 곳
 	@Override
 	public void configure(WebSecurity web) throws Exception {
@@ -61,30 +80,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		web.ignoring().mvcMatchers("/docs/index.html");
 		web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
 	}
-	
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		// TODO Auto-generated method stub
 //		http.authorizeRequests()
 //			.mvcMatchers(HttpMethod.GET,"/api/**").authenticated() // /api로 시작하는 모든 요청을 익명을 허용하겠다.
 //			.anyRequest().authenticated(); // 나머지는 인증이 필요하다.
-		
+
 //		http.authorizeRequests()
 //        .antMatchers("/").permitAll()
 //        .anyRequest().authenticated()
 //        .and()
 //        .httpBasic();
-		
-		http.anonymous()
-		.and()
-		.authorizeRequests()
-		.mvcMatchers(HttpMethod.GET,"/api/**").authenticated() // /api로 시작하는 모든 요청을 익명을 허용하겠다.
-		.anyRequest().authenticated(); // 나머지는 인증이 필요하다.
-		
+
+		http.anonymous().and().authorizeRequests().mvcMatchers(HttpMethod.GET, "/api/**").authenticated() // /api로 시작하는
+																											// 모든 요청을
+																											// 익명을
+																											// 허용하겠다.
+				.anyRequest().authenticated(); // 나머지는 인증이 필요하다.
+
 //		http.authorizeRequests()
 //		.and().csrf().disable().headers().disable();
 	}
-	
+
 //	@Override
 //	protected void configure(HttpSecurity http) throws Exception {
 //		// TODO Auto-generated method stub
