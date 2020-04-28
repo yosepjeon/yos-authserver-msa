@@ -36,8 +36,8 @@ public class AuthConfiguration extends AuthorizationServerConfigurerAdapter{
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	
-//	@Autowired
-//	private ResourceServerProperties resourceServerProperties;
+	@Autowired
+	private ResourceServerProperties resourceServerProperties;
 	
 	@Autowired
 	YoggaebiUserService yoggaebiUserService;
@@ -71,6 +71,7 @@ public class AuthConfiguration extends AuthorizationServerConfigurerAdapter{
 //		endpoints.accessTokenConverter(jwtAccessTokenConverter()).authenticationManager(authenticationManager);
 		
 		endpoints.authenticationManager(authenticationManager)
+		.accessTokenConverter(jwtAccessTokenConverter())
 		.userDetailsService(yoggaebiUserService)
 		.tokenStore(tokenStore);
 	}
@@ -81,12 +82,12 @@ public class AuthConfiguration extends AuthorizationServerConfigurerAdapter{
 //		return new JdbcClientDetailsService(dataSource);
 //	}
 	
-//	@Bean
-//	public AccessTokenConverter jwtAccessTokenConverter() {
-//		// TODO Auto-generated method stub
-//		JwtAccessTokenConverter accessTokenConverter = new JwtAccessTokenConverter();
-//		accessTokenConverter.setSigningKey(resourceServerProperties.getJwt().getKeyValue());
-//		
-//		return accessTokenConverter;
-//	}
+	@Bean
+	public AccessTokenConverter jwtAccessTokenConverter() {
+		// TODO Auto-generated method stub
+		JwtAccessTokenConverter accessTokenConverter = new JwtAccessTokenConverter();
+		accessTokenConverter.setSigningKey(resourceServerProperties.getJwt().getKeyValue());
+		
+		return accessTokenConverter;
+	}
 }
