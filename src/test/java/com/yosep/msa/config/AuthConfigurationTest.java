@@ -29,7 +29,7 @@ public class AuthConfigurationTest extends BaseControllerTest {
 	
 	@Before
 	public void setUp() {
-		String username = "enekelx1";
+		String userName = "enekelx1";
 		String password = "123123";
 		String name = "jys";
 		String email = "enekelx1@naver.com";
@@ -41,7 +41,7 @@ public class AuthConfigurationTest extends BaseControllerTest {
 		String detailAddr = "1103호";
 		
 		user = YoggaebiUser.builder()
-				.userName(username)
+				.userName(userName)
 				.password(password)
 				.name(name)
 				.email(email)

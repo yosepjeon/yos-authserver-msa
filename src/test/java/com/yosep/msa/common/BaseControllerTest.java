@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-//@Import(Rest
+@Import(RestDocsConfiguration.class)
 @ActiveProfiles("test")
 @Ignore
 public class BaseControllerTest {

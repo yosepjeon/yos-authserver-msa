@@ -33,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //	public TokenStore tokenStore() {
 //		return new InMemoryTokenStore();
 //	}
-	
+
 	@Bean
 	public TokenStore tokenStore(RedisConnectionFactory redisConnectionFactory) {
 		return new RedisTokenStore(redisConnectionFactory);
@@ -94,10 +94,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //        .and()
 //        .httpBasic();
 
-		http.anonymous().and().authorizeRequests().mvcMatchers(HttpMethod.GET, "/api/**").authenticated() // /api로 시작하는
-																											// 모든 요청을
-																											// 익명을
-																											// 허용하겠다.
+		http.csrf().disable().authorizeRequests()
+			.mvcMatchers(HttpMethod.POST, "/user/register").permitAll()
+			.mvcMatchers(HttpMethod.GET,"/user/checkdupid").permitAll()
+				// /api로 시작하는
+				// 모든 요청을
+				// 익명을
+				// 허용하겠다.
 				.anyRequest().authenticated(); // 나머지는 인증이 필요하다.
 
 //		http.authorizeRequests()

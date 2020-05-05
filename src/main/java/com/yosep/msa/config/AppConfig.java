@@ -38,7 +38,7 @@ public class AppConfig {
 			@Override
 			public void run(ApplicationArguments args) throws Exception {
 				// TODO Auto-generated method stub
-				String username = "test";
+				String userName = "test";
 				String password = "123123";
 				String name = "jys";
 				String email = "test@naver.com";
@@ -50,7 +50,7 @@ public class AppConfig {
 				String detailAddr = "1103호";
 				
 				YoggaebiUser account = YoggaebiUser.builder()
-						.userName(username)
+						.userName(userName)
 						.password(password)
 						.name(name)
 						.email(email)

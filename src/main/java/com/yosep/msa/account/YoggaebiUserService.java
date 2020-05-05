@@ -1,6 +1,7 @@
 package com.yosep.msa.account;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -12,7 +13,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,6 +30,12 @@ public class YoggaebiUserService implements UserDetailsService {
 
 		return this.yoggaebiUserRepository.save(user);
 	}
+	
+	public Optional<YoggaebiUser> findUserByUsername(String userName) {
+		return this.yoggaebiUserRepository.findByUserName(userName);
+	}
+	
+	
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
