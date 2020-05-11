@@ -11,6 +11,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
@@ -29,13 +30,15 @@ public class YoggaebiUserControllerTest extends BaseControllerTest {
 
 	@Autowired
 	RestTemplate restTemplate;
-	
+
 	YoggaebiUser user;
+	
+	YoggaebiUserDTO userDTO;
 
 	@Before
 	public void setUp() {
 		String userName = "enekelx1";
-		String password = "123123";
+		String password = "12345678";
 		String name = "jys";
 		String email = "enekelx1@naver.com";
 		String phone = "010-2683-2450";
@@ -48,8 +51,11 @@ public class YoggaebiUserControllerTest extends BaseControllerTest {
 		user = YoggaebiUser.builder().userName(userName).password(password).name(name).email(email).phone(phone)
 				.postCode(postCode).roadAddr(roadAddr).jibunAddr(jibunAddr).extraAddr(extraAddr).detailAddr(detailAddr)
 				.roles(Stream.of(YoggaebiUserRole.ADMIN, YoggaebiUserRole.USER).collect(Collectors.toSet())).build();
+		
+		userDTO = YoggaebiUserDTO.builder().userName(userName).password(password).name(name).email(email).phone(phone)
+				.postCode(postCode).roadAddr(roadAddr).jibunAddr(jibunAddr).extraAddr(extraAddr).detailAddr(detailAddr).build();
 	}
-	
+
 	@Test
 	public void testOAuthService() {
 		ResourceOwnerPasswordResourceDetails resource = new ResourceOwnerPasswordResourceDetails();
@@ -67,7 +73,7 @@ public class YoggaebiUserControllerTest extends BaseControllerTest {
 		final OAuth2AccessToken accessToken = oAuth2RestTemplate.getAccessToken();
 		System.out.println("access_token: " + accessToken.getValue());
 //		Greet greet = restTemplate.getForObject("http://localhost:" + port, Greet.class);
-		
+
 //		Assert.assertEquals("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODg2NTc2MDMsInVzZXJfbmFtZSI6InRlc3QiLCJhdXRob3JpdGllcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImp0aSI6ImQ3ZjM5YzQwLWI0ZjgtNDk1ZS1iNGQ0LWVjOTVjODQyMzNhZiIsImNsaWVudF9pZCI6InlvZ2dhZWJpIiwic2NvcGUiOlsicmVhZCIsIndyaXRlIl19.diY-I4eEMovzKyAjy8eqm8tZT030TwWW6_OjFoSvY48", accessToken.getValue());
 
 //		Assert.assertEquals("Hello World!", greet.getMessage());
@@ -77,17 +83,34 @@ public class YoggaebiUserControllerTest extends BaseControllerTest {
 	@Test
 	@TestDescription("인증 서버에 유저를 생성하는 테스트")
 	public void createAuthUser() throws Exception {
-		mockMvc.perform(post("/user/register").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(user)));
+		System.out.println("인증 서버에 유저를 생성하는 테스트");
+		System.out.println(objectMapper.writeValueAsString(userDTO));
+		
+		MvcResult mvcResult = mockMvc.perform(post("/user/register")
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaTypes.HAL_JSON_VALUE)
+				.content(objectMapper.writeValueAsString(userDTO))).andExpect(status().isCreated()).andReturn();
+		
+		System.out.println("[생성 결과] \n" + mvcResult.getResponse().getContentAsString());
 	}
-	
+
 	@Test
 	public void checkDupId() throws Exception {
-		MvcResult mvcResult = mockMvc.perform(get("/user/checkdupid?userName=test"))
-		.andExpect(status().isOk())
-		.andReturn();
-		
+		MvcResult mvcResult = mockMvc.perform(get("/user/checkdupid?userName=test")).andExpect(status().isOk())
+				.andReturn();
+
 		System.out.println("중복 체크 결과: " + mvcResult.getResponse().getContentAsString());
 	}
+
+//	@Test
+//	@TestDescription("유저 등록을 위한 테스트")
+//	public void registerTest() throws Exception {
+//		MvcResult mvcResult = mockMvc.perform(post("/user/register")
+//					.contentType(MediaType.APPLICATION_JSON)
+//					.content(objectMapper.writeValueAsString(user)))
+//				.andExpect(status().isOk())
+//				.andReturn();
+//		
+//		System.out.println(mvcResult.getResponse().getContentAsString());
+//	}
 
 }

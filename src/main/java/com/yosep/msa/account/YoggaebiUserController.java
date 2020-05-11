@@ -48,6 +48,8 @@ public class YoggaebiUserController {
 	
 	@GetMapping("/checkdupid")
 	public ResponseEntity checkDupId(@RequestParam("userName")String userName) {
+		System.out.println("call");
+		
 		Optional<YoggaebiUser> user = userService.findUserByUsername(userName);
 		
 		return user.isPresent()==true?ResponseEntity.ok(NOT_DUPLICATION_USERID):ResponseEntity.ok(DUPLICATION_USERID);
@@ -59,7 +61,7 @@ public class YoggaebiUserController {
 	ResponseEntity register(@RequestBody @Valid YoggaebiUserDTO userDTO,Errors errors) {
 		System.out.println("!!!");
 		if(errors.hasErrors()) {
-			System.out.println("Error!");
+			System.out.println(errors.toString());
 			return badRequest(errors);
 		}
 		
